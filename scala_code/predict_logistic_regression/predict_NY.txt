@@ -1,0 +1,45 @@
+import org.apache.spark.ml.Pipeline
+import org.apache.spark.ml.feature.VectorAssembler
+import org.apache.spark.ml.regression.{LinearRegression, LinearRegressionModel}
+import org.apache.spark.ml.evaluation.RegressionEvaluator
+import org.apache.spark.ml.regression.LinearRegression
+import org.apache.spark.ml.tuning.{ParamGridBuilder, TrainValidationSplit}
+import org.apache.log4j._
+import org.apache.spark.ml.feature.VectorAssembler
+import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.ml.classification.LogisticRegression
+
+
+
+
+
+
+
+val freq2015 =  spark.sql("select * from tcm390.freq2015")
+freq2015.toDF().registerTempTable("freq2015")
+
+
+spark.sql("select count(*) from freq2015 where sub1=2 AND  freq2015.state='NY' AND NOT(freq1=-9) AND NOT(serv=-9.0) AND NOT(age=-9.0) AND NOT(employ=-9)").show
+
+val a=spark.sql("select freq1,age,employ,serv from freq2015 where sub1=2 AND  freq2015.state='NY' AND NOT(freq1=-9) AND NOT(serv=-9.0) AND NOT(age=-9.0) AND NOT(employ=-9)")
+val a3 = a.selectExpr("cast(freq1 as double) freq1", "cast(age as double) age", "cast(employ as double) employ", "cast(serv as double) serv")
+val a1 = a3.select(a3("serv").as("label"),$"freq1",$"age",$"employ")
+val assembler = new VectorAssembler().setInputCols(Array("freq1","age","employ")).setOutputCol("features")
+val a2 = assembler.transform(a1).select($"label",$"features")
+val lr = new LogisticRegression().setFamily("multinomial")
+val lrModel = lr.fit(a2)
+
+val result = lrModel.transform(a2).select("features","label","prediction")
+result.show(500)
+
+val trainingSummary = lrModel.summary
+
+
+
+
+val accuracy = trainingSummary.accuracy
+val falsePositiveRate = trainingSummary.weightedFalsePositiveRate
+val truePositiveRate = trainingSummary.weightedTruePositiveRate
+val fMeasure = trainingSummary.weightedFMeasure
+val precision = trainingSummary.weightedPrecision
+val recall = trainingSummary.weightedRecall

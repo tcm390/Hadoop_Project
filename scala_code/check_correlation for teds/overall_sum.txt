@@ -1,0 +1,54 @@
+import org.apache.spark.ml.evaluation.RegressionEvaluator
+import org.apache.spark.ml.regression.LinearRegression
+import org.apache.spark.ml.tuning.{ParamGridBuilder, TrainValidationSplit}
+import org.apache.log4j._
+import org.apache.spark.ml.feature.VectorAssembler
+import org.apache.spark.mllib.linalg.Vectors
+
+
+val homeless =  sqlContext.sql("select * from tcm390.homeless")
+
+
+val teds =  sqlContext.sql("select * from tcm390.TEDS")
+
+
+teds.toDF().registerTempTable("teds")
+
+homeless.toDF().registerTempTable("homeless")
+sqlContext.sql("SELECT corr(overall,frequency) from teds , homeless where teds.year=homeless.year and teds.state=homeless.state AND teds.state='NY'")
+
+
+val a=sqlContext.sql("SELECT overall,frequency from teds , homeless where teds.year=homeless.year and teds.state=homeless.state AND teds.state='NY'")
+
+
+
+val a3 = a.selectExpr("cast(frequency as double) frequency", "cast(overall as double) overall")
+
+
+val a1 = a3.select(a3("Frequency").as("label"),$"overall")
+
+val assembler = new VectorAssembler().setInputCols(Array("overall")).setOutputCol("features")
+
+val a2 = assembler.transform(a1).select($"label",$"features")
+
+val lr = new LinearRegression()
+
+val lrModel = lr.fit(a2)
+println(s"Coefficients: ${lrModel.coefficients} Intercept: ${lrModel.intercept}")
+
+
+val trainingSummary = lrModel.summary
+println(s"numIterations: ${trainingSummary.totalIterations}")
+println(s"objectiveHistory: ${trainingSummary.objectiveHistory.toList}")
+
+trainingSummary.residuals.show()
+
+println(s"RMSE: ${trainingSummary.rootMeanSquaredError}")
+println(s"MSE: ${trainingSummary.meanSquaredError}")
+println(s"r2: ${trainingSummary.r2}")
+
+
+
+
+
+
