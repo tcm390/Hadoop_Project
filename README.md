@@ -3,9 +3,27 @@
 
 Download crime data from here
 
+http://s3-us-gov-west-1.amazonaws.com/cg-d4b776d0-d898-4153-90c8-8336f86bdfec/estimated_crimes_1979_2019.csv
+
 Download TEDS data from here
 
-Download Educational attainment data from here Download Mental health data from here Download Unemployment data from here Download Homeless data from here
+https://www.datafiles.samhsa.gov/study-series/treatment-episode-data-set-admissions-teds-nid13518
+
+Download Educational attainment data from here 
+
+https://data.census.gov/cedsci/table?q=education%20attainment&t=Education&g=0100000US.050000&y=2017&d=ACS%201-Year%20Estimates%20Subject%20Tables&tid=ACSST1Y2017.S1501&hidePreview=true
+
+Download Mental health data from here 
+
+https://wwwdasis.samhsa.gov/dasis2/mhcld.htm
+
+Download Unemployment data from here 
+
+https://data.bls.gov/PDQWeb/la
+
+Download Homeless data from here
+
+https://www.huduser.gov/portal/sites/default/files/xls/2007-2019-Point-in-Time-Estimates-by-CoC.xlsx
 
 **Data Cleaning**
 
