@@ -55,7 +55,9 @@ hdfs dfs -chmod -R 775 /user/ yourNetID/<output path>
    
 **STORE DATA**
    
-Open beeline and create schema for your dataset. Example:
+Open beeline and create schema for your dataset. 
+   
+Example:
    
 create external table w1 (data1 string, year int, data2 string, temperature int, quality tinyint, data3 string) row format delimited fields terminated by ','
    
@@ -65,5 +67,11 @@ LOAD DATA INPATH "/user/tcm390/freq2015/output" INTO TABLE freq2015;
    
 Open spark to analyze the data.
    
-Run spark1 for the code in “check_correlation for teds” (spark-shell --packages com.databricks:spark-csv_2.10:1.5.0) Run spark2 for the code in “predict_logistic_regression” (spark2-shell --packages com.databricks:spark-csv_2.10:1.5.0)
+Run spark1 for the code in “check_correlation for teds” 
+   
+(spark-shell --packages com.databricks:spark-csv_2.10:1.5.0) 
+   
+Run spark2 for the code in “predict_logistic_regression” 
+   
+(spark2-shell --packages com.databricks:spark-csv_2.10:1.5.0)
  
